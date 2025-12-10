@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center">
                 <div class="p-3 bg-green-100 text-green-600 rounded-lg mr-4">
@@ -45,19 +45,6 @@
                 <div>
                     <p class="text-sm text-gray-500 font-medium">Stok Barang Jadi</p>
                     <h3 class="text-xl font-bold text-gray-800">{{ $stok_jadi }} <span class="text-xs font-normal text-gray-500">Pcs</span></h3>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                <div class="p-3 bg-yellow-100 text-yellow-600 rounded-lg mr-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500 font-medium">Proses Produksi</p>
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-xs bg-yellow-200 text-yellow-800 px-1.5 rounded">Jahit: {{ $proses_jahit }}</span>
-                        <span class="text-xs bg-orange-200 text-orange-800 px-1.5 rounded">Potong: {{ $proses_potong }}</span>
-                    </div>
                 </div>
             </div>
         </div>

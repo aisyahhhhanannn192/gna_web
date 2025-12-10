@@ -9,11 +9,12 @@ class StokCek extends Model
 {
     use HasFactory;
     protected $table = 'stok_cek';
-    protected $guarded = []; // Tidak ada kolom ID auto-increment
+    protected $fillable = ['produk_id', 'warna_id', 'jumlah_stok'];
 
-    // PENTING: Beritahu Laravel kalau ini gak punya 'id' biasa
-    protected $primaryKey = null; 
-    public $incrementing = false; 
+    // Composite Primary Key
+    protected $primaryKey = ['produk_id', 'warna_id'];
+    public $incrementing = false;
+    protected $keyType = 'array'; 
 
     public function produk()
     {

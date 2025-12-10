@@ -18,9 +18,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 2. Master Warna
-        $warnas = ['Merah Maroon', 'Biru Dongker', 'Hitam', 'Hijau Army', 'Kuning Mustard'];
+        $warnas = [
+            ['nama' => 'Merah Maroon', 'kode' => '#800000'],
+            ['nama' => 'Biru Dongker', 'kode' => '#003366'],
+            ['nama' => 'Hitam', 'kode' => '#000000'],
+            ['nama' => 'Hijau Army', 'kode' => '#556B2F'],
+            ['nama' => 'Kuning Mustard', 'kode' => '#FFDB58'],
+            ['nama' => 'Pink', 'kode' => '#FF69B4'],
+            ['nama' => 'Putih', 'kode' => '#FFFFFF'],
+            ['nama' => 'Abu-abu', 'kode' => '#808080'],
+            ['nama' => 'Biru Muda', 'kode' => '#87CEEB'],
+            ['nama' => 'Ungu', 'kode' => '#800080'],
+        ];
         foreach ($warnas as $w) {
-            \App\Models\MasterWarna::create(['nama_warna' => $w, 'kode_warna' => '#'.dechex(rand(0x000000, 0xFFFFFF))]);
+            \App\Models\MasterWarna::create(['nama_warna' => $w['nama'], 'kode_warna' => $w['kode']]);
         }
 
         // 3. Master Produk

@@ -42,7 +42,7 @@ class PerakitanController extends Controller
             'tanggal'   => 'required|date',
         ]);
 
-        // Cek Stok Cek
+        // Cek Stok Cek dengan composite key
         $stok = StokCek::where('produk_id', $request->produk_id)
                        ->where('warna_id', $request->warna_id)
                        ->first();
@@ -64,7 +64,10 @@ class PerakitanController extends Controller
                 'status'        => 'sedang_dikerjakan'
             ]);
 
-            $stok->decrement('jumlah_stok', $request->jumlah);
+            // Update stok menggunakan query yang explicit untuk composite key
+            StokCek::where('produk_id', $stok->produk_id)
+                   ->where('warna_id', $stok->warna_id)
+                   ->decrement('jumlah_stok', $request->jumlah);
         });
 
         return back()->with('success', 'Pekerjaan berhasil diserahkan ke Korlap.');

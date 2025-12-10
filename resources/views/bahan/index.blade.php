@@ -32,12 +32,16 @@
                 
                 <div class="space-y-3">
                     @forelse($stok as $item)
-                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-md transition-shadow">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-full border shadow-sm" style="background-color: {{ $item->warna->kode_warna ?? '#ddd' }}"></div>
+                            <div 
+                                class="w-8 h-8 rounded-full border-2 border-gray-300 shadow-sm flex-shrink-0" 
+                                style="background-color: {{ $item->warna?->kode_warna ?? '#e5e7eb' }}"
+                                title="{{ $item->warna?->nama_warna ?? 'Warna Tidak Tersedia' }}"
+                            ></div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-700">{{ $item->warna->nama_warna }}</p>
-                                <p class="text-xs text-gray-400">ID: {{ $item->warna->id }}</p>
+                                <p class="text-sm font-semibold text-gray-700">{{ $item->warna?->nama_warna ?? 'N/A' }}</p>
+                                <p class="text-xs text-gray-400">Kode: {{ $item->warna?->kode_warna ?? '-' }}</p>
                             </div>
                         </div>
                         <div class="text-right">
@@ -46,8 +50,12 @@
                         </div>
                     </div>
                     @empty
-                    <div class="text-center py-8 text-gray-400 text-sm">
-                        Gudang Kosong. <br> Belum ada kain masuk.
+                    <div class="text-center py-8 text-gray-400 text-sm border-2 border-dashed border-gray-200 rounded-lg">
+                        <svg class="w-10 h-10 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                        </svg>
+                        <p>Gudang Kosong</p>
+                        <p class="text-xs mt-1">Belum ada kain masuk dari supplier</p>
                     </div>
                     @endforelse
                 </div>
