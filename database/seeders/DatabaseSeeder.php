@@ -11,11 +11,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. Buat User Admin Default
-        \App\Models\User::create([
-            'name' => 'Admin GNA',
-            'email' => 'admin@gna.com',
-            'password' => Hash::make('password'), // Password default
-        ]);
+        \App\Models\User::firstOrCreate(
+            ['email' => 'admin@gna.com'],
+            [
+                'name' => 'Admin GNA',
+                'password' => Hash::make('password'),
+            ]
+        );
 
         // 2. Master Warna (15 warna lengkap)
         $warnas = [
