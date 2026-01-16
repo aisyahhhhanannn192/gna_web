@@ -85,8 +85,18 @@
                                     <div class="text-gray-900">{{ $t->produk->nama_produk }}</div>
                                     <div class="text-xs text-gray-500">{{ $t->warna->nama_warna }}</div>
                                 </td>
-                                <td class="px-6 py-4 text-right font-bold text-red-600">
-                                    - {{ $t->jumlah_keluar }} Pcs
+                                
+                                {{-- TAMPILAN KODI DI TABEL --}}
+                                <td class="px-6 py-4 text-right">
+                                    @php
+                                        $kodi = floor($t->jumlah_keluar / 20);
+                                        $sisa = $t->jumlah_keluar % 20;
+                                    @endphp
+                                    <div class="font-bold text-red-600">
+                                        {{ $kodi }} Kodi
+                                        @if($sisa > 0) + {{ $sisa }} Pcs @endif
+                                    </div>
+                                    <div class="text-[10px] text-gray-400">Total: {{ $t->jumlah_keluar }} Pcs</div>
                                 </td>
                             </tr>
                             @empty
@@ -145,9 +155,25 @@
                             <input type="hidden" name="produk_id" id="p_id">
                             <input type="hidden" name="warna_id" id="w_id">
                             
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Jumlah Dikirim (Pcs)</label>
-                                <input type="number" name="jumlah" min="1" required class="w-full border p-2 rounded text-center text-lg font-bold">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Jumlah Kodi (Iketan)</label>
+                                    <div class="relative">
+                                        <input type="number" name="jumlah_kodi" min="0" placeholder="0" 
+                                               class="w-full border p-2 rounded text-lg font-bold text-green-800 text-center">
+                                        <span class="absolute right-3 top-3 text-gray-300 text-[10px]">x20</span>
+                                    </div>
+                                    <p class="text-[10px] text-gray-500 mt-1 text-center">1 Kodi = 20 Pcs</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Lebihan (Pcs)</label>
+                                    <div class="relative">
+                                        <input type="number" name="jumlah_pcs" min="0" max="19" placeholder="0" 
+                                               class="w-full border p-2 rounded text-lg font-bold text-gray-700 text-center">
+                                        <span class="absolute right-3 top-2.5 text-gray-400 text-xs font-bold">Pcs</span>
+                                    </div>
+                                    <p class="text-[10px] text-gray-500 mt-1 text-center">Sisa satuan</p>
+                                </div>
                             </div>
                         </div>
                     </div>
