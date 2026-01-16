@@ -43,8 +43,22 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="block text-xl font-bold text-green-700">{{ $s->jumlah_stok }}</span>
-                                <span class="text-[10px] uppercase font-bold text-green-500">Pcs</span>
+                                @php
+                                    $kodi = floor($s->jumlah_stok / 20);
+                                    $sisa = $s->jumlah_stok % 20;
+                                @endphp
+
+                                <span class="block text-lg font-bold text-green-700">
+                                    {{ $kodi }} <span class="text-xs font-normal text-green-500">Kodi</span>
+                                </span>
+
+                                @if($sisa > 0)
+                                    <span class="block text-xs font-bold text-red-500">
+                                        + {{ $sisa }} Pcs
+                                    </span>
+                                @endif
+
+                                <span class="block text-[10px] text-gray-400 mt-0.5">Total: {{ $s->jumlah_stok }} Pcs</span>
                             </div>
                         </div>
                     </div>
