@@ -19,26 +19,22 @@ class DashboardController extends Controller
         $total_omzet = TransaksiReseller::sum('total_harga');
         $stok_kain   = StokBahanKain::sum('jumlah_gulungan');
         $stok_jadi   = StokGudangJadi::sum('jumlah_stok');
+        $total_pesanan = TransaksiReseller::count(); // Total pesanan
 
         // Menghitung jumlah pekerjaan aktif (Nota yang belum selesai)
         $proses_jahit = DistribusiKorlap::where('status', 'sedang_dikerjakan')->count();
         $proses_potong = DistribusiPemotong::where('status', 'proses')->count();
 
-        // 2. DATA CHART (Tren Penjualan 7 Hari Terakhir)
-        $chart_labels = [];
-        $chart_data   = [];
+        // 2. DATA CHART - Top 5 Warna Terlaris
+        $warna_data_raw = TransaksiReseller::select('warna_id', DB::raw('sum(jumlah_keluar) as total_penjualan'))
+            ->with('warna')
+            ->groupBy('warna_id')
+            ->orderByDesc('total_penjualan')
+            ->limit(5)
+            ->get();
 
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i);
-            $formattedDate = $date->format('Y-m-d');
-
-            // Query Omzet per hari
-            $omzet_harian = TransaksiReseller::whereDate('tanggal_transaksi', $formattedDate)
-                ->sum('total_harga');
-
-            $chart_labels[] = $date->format('d M'); // Label: "29 Nov"
-            $chart_data[]   = $omzet_harian;
-        }
+        $warna_labels = $warna_data_raw->map(fn($item) => $item->warna->nama_warna ?? 'Unknown')->toArray();
+        $warna_data = $warna_data_raw->map(fn($item) => $item->total_penjualan)->toArray();
 
         // 3. ALERT SYSTEM (Stok Kain Menipis < 5 Gulung)
         $stok_kritis = StokBahanKain::with('warna')
@@ -59,10 +55,11 @@ class DashboardController extends Controller
             'total_omzet',
             'stok_kain',
             'stok_jadi',
+            'total_pesanan',
             'proses_jahit',
             'proses_potong',
-            'chart_labels',
-            'chart_data',
+            'warna_labels',
+            'warna_data',
             'stok_kritis',
             'top_produk'
         ));

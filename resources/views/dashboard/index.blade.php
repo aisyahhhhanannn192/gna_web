@@ -19,22 +19,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                <div class="p-3 bg-green-100 text-green-600 rounded-lg mr-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="p-3 bg-orange-100 text-orange-600 rounded-lg mr-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 font-medium">Total Omzet</p>
-                    <h3 class="text-xl font-bold text-gray-800">Rp {{ number_format($total_omzet, 0, ',', '.') }}</h3>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                <div class="p-3 bg-blue-100 text-blue-600 rounded-lg mr-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500 font-medium">Stok Kain</p>
-                    <h3 class="text-xl font-bold text-gray-800">{{ $stok_kain }} <span class="text-xs font-normal text-gray-500">Gulung</span></h3>
+                    <p class="text-sm text-gray-500 font-medium">Total Pesanan</p>
+                    <h3 class="text-xl font-bold text-gray-800">{{ $total_pesanan ?? 0 }} <span class="text-xs font-normal text-gray-500">Order</span></h3>
                 </div>
             </div>
 
@@ -52,8 +42,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-4">Tren Pendapatan (7 Hari Terakhir)</h3>
-                <div id="chartSales"></div>
+                <h3 class="font-bold text-gray-800 mb-4">Top 5 Warna Terlaris</h3>
+                <div id="chartWarna"></div>
             </div>
 
             <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -113,47 +103,39 @@
 
     <script>
         var options = {
-            series: [{
-                name: 'Omzet (Rp)',
-                data: @json($chart_data) // Data dari Controller
-            }],
+            series: [@json($warna_data ?? [])],
             chart: {
-                type: 'area',
+                type: 'bar',
                 height: 350,
                 toolbar: { show: false }
             },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    borderRadius: 4
+                }
+            },
             dataLabels: { enabled: false },
-            stroke: { curve: 'smooth' },
+            stroke: { show: true, width: 2, colors: ['transparent'] },
             xaxis: {
-                categories: @json($chart_labels), // Label Tanggal
+                categories: @json($warna_labels ?? []),
             },
             yaxis: {
-                labels: {
-                    formatter: function (value) {
-                        return "Rp " + value.toLocaleString("id-ID");
-                    }
-                }
+                title: { text: 'Jumlah Terjual (Pcs)' }
             },
-            colors: ['#0d9488'], // Warna GNA Primary
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shadeIntensity: 1,
-                    opacityFrom: 0.7,
-                    opacityTo: 0.9,
-                    stops: [0, 90, 100]
-                }
-            },
+            fill: { opacity: 1 },
+            colors: ['#0d9488', '#06b6d4', '#f59e0b', '#ef4444', '#8b5cf6'],
             tooltip: {
                 y: {
                     formatter: function (val) {
-                        return "Rp " + val.toLocaleString("id-ID")
+                        return val + " Pcs"
                     }
                 }
             }
         };
 
-        var chart = new ApexCharts(document.querySelector("#chartSales"), options);
+        var chart = new ApexCharts(document.querySelector("#chartWarna"), options);
         chart.render();
     </script>
 @endsection

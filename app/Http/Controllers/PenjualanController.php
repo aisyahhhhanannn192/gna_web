@@ -13,15 +13,15 @@ class PenjualanController extends Controller
 {
     public function index()
     {
-        // 1. Data Reseller untuk Dropdown
+        // 1. Data Reseller
         $resellers = MasterReseller::all();
 
-        // 2. Stok Siap Jual (Hanya yang > 0)
+        // 2. Stok Siap Jual
         $stok_ready = StokGudangJadi::with(['produk', 'warna'])
                         ->where('jumlah_stok', '>', 0)
                         ->get();
 
-        // 3. Riwayat Penjualan (Tampilkan Omzet)
+        // 3. Riwayat Distribusi (Tanpa Uang)
         $riwayat = TransaksiReseller::with(['reseller', 'produk', 'warna'])
                     ->latest()
                     ->paginate(20);
@@ -36,8 +36,8 @@ class PenjualanController extends Controller
             'produk_id'   => 'required',
             'warna_id'    => 'required',
             'jumlah'      => 'required|integer|min:1',
-            'harga'       => 'required|numeric|min:0', // Harga Satuan
             'tanggal'     => 'required|date',
+            // 'harga' => 'required' <-- KITA HAPUS INI
         ]);
 
         // 1. Cek Stok Gudang Jadi
@@ -50,8 +50,8 @@ class PenjualanController extends Controller
         }
 
         DB::transaction(function () use ($request, $stok) {
-            // 2. Buat Invoice
-            $no_inv = 'INV-' . date('dm') . '-' . strtoupper(Str::random(4));
+            // 2. Buat Invoice Distribusi
+            $no_inv = 'DO-' . date('dm') . '-' . strtoupper(Str::random(4)); // Ganti INV jadi DO (Delivery Order)
             
             TransaksiReseller::create([
                 'no_invoice'    => $no_inv,
@@ -59,8 +59,11 @@ class PenjualanController extends Controller
                 'produk_id'     => $request->produk_id,
                 'warna_id'      => $request->warna_id,
                 'jumlah_keluar' => $request->jumlah,
-                'harga_satuan'  => $request->harga,
-                'total_harga'   => $request->jumlah * $request->harga, // Hitung otomatis
+                
+                // MATA UANG KITA MATIKAN
+                'harga_satuan'  => 0, 
+                'total_harga'   => 0, 
+                
                 'tanggal_transaksi' => $request->tanggal,
             ]);
 
@@ -68,6 +71,6 @@ class PenjualanController extends Controller
             $stok->decrement('jumlah_stok', $request->jumlah);
         });
 
-        return back()->with('success', 'Penjualan berhasil dicatat.');
+        return back()->with('success', 'Distribusi barang berhasil dicatat.');
     }
 }

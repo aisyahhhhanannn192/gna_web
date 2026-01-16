@@ -32,6 +32,6 @@ class DistribusiPemotong extends Model
     // Relasi ke Anak (Setoran)
     public function setoran()
     {
-        return $this->hasMany(SetorPemotong::class, 'distribusi_pemotong_id');
+        return $this->hasOne(SetorPemotong::class, 'distribusi_pemotong_id');
     }
 }

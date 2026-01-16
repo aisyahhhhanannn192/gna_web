@@ -32,7 +32,6 @@
                     </svg>
                     Stok Cek (Siap Jahit)
                 </h3>
-                
                 <div class="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                     @forelse($stok_ready as $s)
                     <div class="p-4 bg-blue-50 rounded-lg border border-blue-100 hover:shadow-md transition-shadow">
@@ -58,7 +57,6 @@
                     @endforelse
                 </div>
             </div>
-            
             <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200 text-sm text-yellow-800">
                 <p><strong>Tips:</strong> Stok di atas adalah akumulasi dari setoran pemotong yang belum dibagikan ke penjahit.</p>
             </div>
@@ -84,13 +82,16 @@
                               @forelse($riwayat as $d)
                               
                               @php
+                                  // Hitung Progres
                                   $total_jadi  = $d->setoran->sum('jumlah_pcs_jadi');
                                   $total_afkir = $d->setoran->sum('jumlah_afkir');
                                   $total_proses = $total_jadi + $total_afkir;
                                   $sisa_pending = $d->jumlah_cek_keluar - $total_proses;
-                                  
-                                  // Persentase Selesai (Opsional, buat gaya)
                                   $persen = $d->jumlah_cek_keluar > 0 ? round(($total_proses / $d->jumlah_cek_keluar) * 100) : 0;
+                                  
+                                  // Konversi Tampilan Kodi
+                                  $t_kodi = floor($d->jumlah_cek_keluar / 20);
+                                  $t_sisa = $d->jumlah_cek_keluar % 20;
                               @endphp
 
                               <tr class="border-b hover:bg-gray-50 transition-colors">
@@ -101,11 +102,14 @@
                                   <td class="px-6 py-4 font-medium">{{ $d->korlap->nama_korlap }}</td>
                                   <td class="px-6 py-4">
                                       <div class="text-gray-900 font-medium">{{ $d->produk->nama_produk }}</div>
-                                      
                                       <div class="flex items-center gap-2 mt-1 mb-2 text-xs text-gray-500">
                                           <span class="w-2 h-2 rounded-full border" style="background-color: {{ $d->warna->kode_warna }}"></span>
                                           {{ $d->warna->nama_warna }}
-                                          <span class="bg-gray-100 px-1.5 rounded text-gray-600 font-bold ml-1">Target: {{ $d->jumlah_cek_keluar }}</span>
+                                      </div>
+
+                                      <div class="mb-2 bg-blue-50 px-2 py-1 rounded w-fit text-xs text-blue-800 border border-blue-100">
+                                          <strong>Target:</strong> {{ $t_kodi }} Kodi 
+                                          @if($t_sisa > 0) + {{ $t_sisa }} Pcs @endif
                                       </div>
 
                                       <div class="w-full bg-gray-200 rounded-full h-1.5 mb-1">
@@ -114,7 +118,7 @@
                                       <div class="flex text-[10px] gap-2 font-medium">
                                           <span class="text-green-600">Jadi: {{ $total_jadi }}</span>
                                           <span class="text-red-600">Afkir: {{ $total_afkir }}</span>
-                                          <span class="text-yellow-600 bg-yellow-50 px-1 rounded">Sisa/Pending: {{ $sisa_pending }}</span>
+                                          <span class="text-yellow-600 bg-yellow-50 px-1 rounded">Pending: {{ $sisa_pending }}</span>
                                       </div>
                                   </td>
                                   <td class="px-6 py-4 text-center">
@@ -193,8 +197,27 @@
                             <input type="hidden" name="produk_id" id="p_id">
                             <input type="hidden" name="warna_id" id="w_id">
                             
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Diserahkan (Pcs)</label>
-                            <input type="number" name="jumlah" min="1" required class="w-full border p-2 rounded" placeholder="0">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Jumlah Kodi (Iketan)</label>
+                                    <div class="relative">
+                                        <input type="number" name="jumlah_kodi" min="0" placeholder="0" 
+                                               class="w-full border p-2 rounded text-lg font-bold text-blue-900 text-center">
+                                        <span class="absolute right-3 top-3 text-gray-300 text-[10px]">x20</span>
+                                    </div>
+                                    <p class="text-[10px] text-gray-500 mt-1 text-center">1 Kodi = 20 Pcs</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Lebihan (Pcs)</label>
+                                    <div class="relative">
+                                        <input type="number" name="jumlah_pcs" min="0" max="19" placeholder="0" 
+                                               class="w-full border p-2 rounded text-lg font-bold text-gray-700 text-center">
+                                        <span class="absolute right-3 top-2.5 text-gray-400 text-xs font-bold">Pcs</span>
+                                    </div>
+                                    <p class="text-[10px] text-gray-500 mt-1 text-center">Sisa satuan</p>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="mt-6 flex justify-end gap-3">
